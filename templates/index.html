@@ -132,15 +132,17 @@
       document.getElementById('percentCorrect').textContent = percent + '%';
     }
 
-    // Select a new state that hasn’t been answered (its SVG fill remains default)
+    // Select a new state that hasn't been answered (its SVG fill remains default)
     function selectNewState() {
       const stateKeys = Object.keys(stateData);
       const available = stateKeys.filter(key => {
         const stateElem = document.getElementById('US-' + key);
         if (!stateElem) return false;
         const fill = window.getComputedStyle(stateElem).fill;
-        // Check if the fill is white (in rgb format or hex)
-        return (fill === 'rgb(255, 255, 255)' || fill === '#ffffff' || fill === 'white');
+        // Check if the fill is white (in rgb or hex)
+        return (fill === 'rgb(255, 255, 255)' ||
+                fill.toLowerCase() === '#ffffff' ||
+                fill.toLowerCase() === 'white');
       });
       if (available.length === 0) {
         document.getElementById('currentStateName').textContent = "All states answered!";
@@ -149,7 +151,7 @@
       const randomIndex = Math.floor(Math.random() * available.length);
       currentState = available[randomIndex];
       document.getElementById('currentStateName').textContent = stateData[currentState].name;
-      document.getElementById('message').textContent = "";
+      // Do not clear the message immediately
     }
 
     // Reset map and stats
@@ -158,17 +160,16 @@
       incorrectCount = 0;
       totalCount = 0;
       updateStats();
-      // Reset every state's fill to default white
       for (const key in stateData) {
         const elem = document.getElementById('US-' + key);
         if (elem) {
           elem.style.fill = '#ffffff';
         }
       }
+      document.getElementById('message').textContent = "";
       selectNewState();
     }
 
-    // Handle form submission
     document.getElementById('capital-form').addEventListener('submit', function(event) {
       event.preventDefault();
       if (!currentState) return;
@@ -181,7 +182,8 @@
         if (stateElem) {
           stateElem.style.fill = '#34d399'; // green for correct
         }
-        document.getElementById('message').textContent = "Correct!";
+        document.getElementById('message').textContent =
+          "Correct! " + stateData[currentState].capital + " is the capital of " + stateData[currentState].name + ".";
       } else {
         incorrectCount++;
         if (stateElem) {
@@ -192,6 +194,8 @@
       }
       document.getElementById('capital').value = "";
       updateStats();
+      // Wait 2 seconds before moving on so that the feedback remains visible.
+      // setTimeout(selectNewState, 2000);
       selectNewState();
     });
 
@@ -205,7 +209,7 @@
       .then(svgText => {
         document.getElementById('map-container').innerHTML = svgText;
         svgMap = document.querySelector('#map-container svg');
-        // Ensure each state path has the default fill (if not already set)
+        // Ensure each state's path has the default fill (if not already set)
         const paths = svgMap.querySelectorAll('path');
         paths.forEach(path => {
           if (!path.getAttribute('fill') || path.getAttribute('fill') === 'none') {
