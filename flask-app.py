@@ -1,19 +1,10 @@
-from flask import Flask, render_template, request
-
-from app.roman import Roman
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
-
-@app.route('/', methods=['GET'])
+@app.route('/')
 def index() -> str:
-    roman: str = str(request.args.get("roman"))
-    arabic: int = -1
-    if roman != "None":
-        arabic = Roman.convert(roman)
-
-    return render_template("index.html", roman=roman, arabic=arabic)
-
+    return render_template("index.html")
 
 if __name__ == '__main__':
     app.run()
