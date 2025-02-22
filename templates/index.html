@@ -1,200 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>State Capitals Practice</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* The "map" is displayed as a grid of state boxes */
-        #map {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .state {
-            border: 1px solid #ccc;
-            padding: 20px;
-            text-align: center;
-            background-color: white;
-            cursor: default;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>State Capitals Practice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* When the SVG is loaded into #map-container,
+       override its paths so that they appear as a blank (white) map with light gray outlines */
+    #map-container svg path {
+      fill: #ffffff;
+      stroke: #cccccc;
+      stroke-width: 1;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
-    <h1 class="text-3xl font-bold text-gray-800 mb-8">State Capitals Practice</h1>
-    
-    <!-- US Map represented as a grid of state abbreviations -->
-    <div id="map" class="w-full max-w-4xl">
-        <!-- For simplicity, the states are listed in alphabetical order by their abbreviations.
-             In a production app you might use an accurate SVG map with proper state shapes. -->
-        <div class="state" id="AL">AL</div>
-        <div class="state" id="AK">AK</div>
-        <div class="state" id="AZ">AZ</div>
-        <div class="state" id="AR">AR</div>
-        <div class="state" id="CA">CA</div>
-        <div class="state" id="CO">CO</div>
-        <div class="state" id="CT">CT</div>
-        <div class="state" id="DE">DE</div>
-        <div class="state" id="FL">FL</div>
-        <div class="state" id="GA">GA</div>
-        <div class="state" id="HI">HI</div>
-        <div class="state" id="ID">ID</div>
-        <div class="state" id="IL">IL</div>
-        <div class="state" id="IN">IN</div>
-        <div class="state" id="IA">IA</div>
-        <div class="state" id="KS">KS</div>
-        <div class="state" id="KY">KY</div>
-        <div class="state" id="LA">LA</div>
-        <div class="state" id="ME">ME</div>
-        <div class="state" id="MD">MD</div>
-        <div class="state" id="MA">MA</div>
-        <div class="state" id="MI">MI</div>
-        <div class="state" id="MN">MN</div>
-        <div class="state" id="MS">MS</div>
-        <div class="state" id="MO">MO</div>
-        <div class="state" id="MT">MT</div>
-        <div class="state" id="NE">NE</div>
-        <div class="state" id="NV">NV</div>
-        <div class="state" id="NH">NH</div>
-        <div class="state" id="NJ">NJ</div>
-        <div class="state" id="NM">NM</div>
-        <div class="state" id="NY">NY</div>
-        <div class="state" id="NC">NC</div>
-        <div class="state" id="ND">ND</div>
-        <div class="state" id="OH">OH</div>
-        <div class="state" id="OK">OK</div>
-        <div class="state" id="OR">OR</div>
-        <div class="state" id="PA">PA</div>
-        <div class="state" id="RI">RI</div>
-        <div class="state" id="SC">SC</div>
-        <div class="state" id="SD">SD</div>
-        <div class="state" id="TN">TN</div>
-        <div class="state" id="TX">TX</div>
-        <div class="state" id="UT">UT</div>
-        <div class="state" id="VT">VT</div>
-        <div class="state" id="VA">VA</div>
-        <div class="state" id="WA">WA</div>
-        <div class="state" id="WV">WV</div>
-        <div class="state" id="WI">WI</div>
-        <div class="state" id="WY">WY</div>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-6">
+    <!-- Stats Panel -->
+    <div class="mb-4 bg-white shadow rounded p-4 flex justify-around text-gray-700">
+      <div>Correct: <span id="correctCount">0</span></div>
+      <div>Incorrect: <span id="incorrectCount">0</span></div>
+      <div>Total: <span id="totalCount">0</span></div>
+      <div>Percent: <span id="percentCorrect">0%</span></div>
     </div>
 
-    <!-- Input form for entering a state capital -->
-    <div class="w-full max-w-md">
-        <form id="capital-form" class="space-y-4">
-            <div>
-                <label for="capital" class="block text-sm font-medium text-gray-700">
-                    Enter a state capital:
-                </label>
-                <input
-                    type="text"
-                    id="capital"
-                    name="capital"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="e.g., Sacramento"
-                    autocomplete="off"
-                >
-            </div>
-            <button
-                type="submit"
-                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-                Submit
-            </button>
-        </form>
-        <p id="message" class="mt-4 text-center text-sm text-gray-600"></p>
-        <button id="reset-button" class="mt-4 w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none">
-            Reset Map
+    <!-- State Prompt -->
+    <div class="mb-4 text-center">
+      <h2 class="text-2xl font-semibold">
+        What is the capital of <span id="currentStateName" class="text-indigo-600"></span>?
+      </h2>
+    </div>
+
+    <!-- Input Form -->
+    <div class="mb-6 text-center">
+      <form id="capital-form" class="flex justify-center">
+        <input type="text" id="capital" name="capital" placeholder="Enter capital"
+          class="w-64 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <button type="submit"
+          class="px-4 py-2 bg-indigo-600 text-white rounded-r-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          Submit
         </button>
+      </form>
+      <p id="message" class="mt-2 text-sm text-gray-600"></p>
     </div>
 
-    <script>
-        // Mapping of lowercased capitals to their state abbreviations.
-        const capitalsToState = {
-            "montgomery": "AL",
-            "juneau": "AK",
-            "phoenix": "AZ",
-            "little rock": "AR",
-            "sacramento": "CA",
-            "denver": "CO",
-            "hartford": "CT",
-            "dover": "DE",
-            "tallahassee": "FL",
-            "atlanta": "GA",
-            "honolulu": "HI",
-            "boise": "ID",
-            "springfield": "IL",
-            "indianapolis": "IN",
-            "des moines": "IA",
-            "topeka": "KS",
-            "frankfort": "KY",
-            "baton rouge": "LA",
-            "augusta": "ME",
-            "annapolis": "MD",
-            "boston": "MA",
-            "lansing": "MI",
-            "st. paul": "MN",
-            "jackson": "MS",
-            "jefferson city": "MO",
-            "helena": "MT",
-            "lincoln": "NE",
-            "carson city": "NV",
-            "concord": "NH",
-            "trenton": "NJ",
-            "santa fe": "NM",
-            "albany": "NY",
-            "raleigh": "NC",
-            "bismarck": "ND",
-            "columbus": "OH",
-            "oklahoma city": "OK",
-            "salem": "OR",
-            "harrisburg": "PA",
-            "providence": "RI",
-            "columbia": "SC",
-            "pierre": "SD",
-            "nashville": "TN",
-            "austin": "TX",
-            "salt lake city": "UT",
-            "montpelier": "VT",
-            "richmond": "VA",
-            "olympia": "WA",
-            "charleston": "WV",
-            "madison": "WI",
-            "cheyenne": "WY"
-        };
+    <!-- Map Container -->
+    <div id="map-container" class="mb-6 mx-auto" style="max-width: 800px;"></div>
 
-        document.getElementById("capital-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const input = document.getElementById("capital").value.trim().toLowerCase();
-            const messageEl = document.getElementById("message");
-            if (capitalsToState.hasOwnProperty(input)) {
-                const stateAbbr = capitalsToState[input];
-                const stateEl = document.getElementById(stateAbbr);
-                if (stateEl.style.backgroundColor === "green") {
-                    messageEl.textContent = stateAbbr + " is already marked!";
-                } else {
-                    stateEl.style.backgroundColor = "green";
-                    messageEl.textContent = "Correct! " + input.charAt(0).toUpperCase() + input.slice(1) +
-                        " is the capital for " + stateAbbr + ".";
-                }
-            } else {
-                messageEl.textContent = "Incorrect capital. Try again!";
-            }
-            document.getElementById("capital").value = "";
-        });
+    <!-- Reset Button -->
+    <div class="text-center">
+      <button id="reset-button"
+        class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none">
+        Reset Map
+      </button>
+    </div>
+  </div>
 
-        document.getElementById("reset-button").addEventListener("click", function() {
-            // Reset every state back to white.
-            const states = document.getElementsByClassName("state");
-            for (let state of states) {
-                state.style.backgroundColor = "white";
-            }
-            document.getElementById("message").textContent = "";
+  <script>
+    // Mapping of state abbreviations to state name and capital.
+    const stateData = {
+      "AL": { name: "Alabama", capital: "Montgomery" },
+      "AK": { name: "Alaska", capital: "Juneau" },
+      "AZ": { name: "Arizona", capital: "Phoenix" },
+      "AR": { name: "Arkansas", capital: "Little Rock" },
+      "CA": { name: "California", capital: "Sacramento" },
+      "CO": { name: "Colorado", capital: "Denver" },
+      "CT": { name: "Connecticut", capital: "Hartford" },
+      "DC": { name: "Washington, DC", capital: "Washington" },
+      "DE": { name: "Delaware", capital: "Dover" },
+      "FL": { name: "Florida", capital: "Tallahassee" },
+      "GA": { name: "Georgia", capital: "Atlanta" },
+      "HI": { name: "Hawaii", capital: "Honolulu" },
+      "ID": { name: "Idaho", capital: "Boise" },
+      "IL": { name: "Illinois", capital: "Springfield" },
+      "IN": { name: "Indiana", capital: "Indianapolis" },
+      "IA": { name: "Iowa", capital: "Des Moines" },
+      "KS": { name: "Kansas", capital: "Topeka" },
+      "KY": { name: "Kentucky", capital: "Frankfort" },
+      "LA": { name: "Louisiana", capital: "Baton Rouge" },
+      "ME": { name: "Maine", capital: "Augusta" },
+      "MD": { name: "Maryland", capital: "Annapolis" },
+      "MA": { name: "Massachusetts", capital: "Boston" },
+      "MI": { name: "Michigan", capital: "Lansing" },
+      "MN": { name: "Minnesota", capital: "Saint Paul" },
+      "MS": { name: "Mississippi", capital: "Jackson" },
+      "MO": { name: "Missouri", capital: "Jefferson City" },
+      "MT": { name: "Montana", capital: "Helena" },
+      "NE": { name: "Nebraska", capital: "Lincoln" },
+      "NV": { name: "Nevada", capital: "Carson City" },
+      "NH": { name: "New Hampshire", capital: "Concord" },
+      "NJ": { name: "New Jersey", capital: "Trenton" },
+      "NM": { name: "New Mexico", capital: "Santa Fe" },
+      "NY": { name: "New York", capital: "Albany" },
+      "NC": { name: "North Carolina", capital: "Raleigh" },
+      "ND": { name: "North Dakota", capital: "Bismarck" },
+      "OH": { name: "Ohio", capital: "Columbus" },
+      "OK": { name: "Oklahoma", capital: "Oklahoma City" },
+      "OR": { name: "Oregon", capital: "Salem" },
+      "PA": { name: "Pennsylvania", capital: "Harrisburg" },
+      "RI": { name: "Rhode Island", capital: "Providence" },
+      "SC": { name: "South Carolina", capital: "Columbia" },
+      "SD": { name: "South Dakota", capital: "Pierre" },
+      "TN": { name: "Tennessee", capital: "Nashville" },
+      "TX": { name: "Texas", capital: "Austin" },
+      "UT": { name: "Utah", capital: "Salt Lake City" },
+      "VT": { name: "Vermont", capital: "Montpelier" },
+      "VA": { name: "Virginia", capital: "Richmond" },
+      "WA": { name: "Washington", capital: "Olympia" },
+      "WV": { name: "West Virginia", capital: "Charleston" },
+      "WI": { name: "Wisconsin", capital: "Madison" },
+      "WY": { name: "Wyoming", capital: "Cheyenne" }
+    };
+
+    let correctCount = 0;
+    let incorrectCount = 0;
+    let totalCount = 0;
+    let currentState = null;
+    let svgMap = null; // will hold the loaded SVG element
+
+    // Update stats display
+    function updateStats() {
+      document.getElementById('correctCount').textContent = correctCount;
+      document.getElementById('incorrectCount').textContent = incorrectCount;
+      document.getElementById('totalCount').textContent = totalCount;
+      const percent = totalCount === 0 ? 0 : Math.round((correctCount / totalCount) * 100);
+      document.getElementById('percentCorrect').textContent = percent + '%';
+    }
+
+    // Select a new state that hasn’t been answered (its SVG fill remains default)
+    function selectNewState() {
+      const stateKeys = Object.keys(stateData);
+      const available = stateKeys.filter(key => {
+        const stateElem = document.getElementById('US-' + key);
+        if (!stateElem) return false;
+        const fill = window.getComputedStyle(stateElem).fill;
+        // Check if the fill is white (in rgb format or hex)
+        return (fill === 'rgb(255, 255, 255)' || fill === '#ffffff' || fill === 'white');
+      });
+      if (available.length === 0) {
+        document.getElementById('currentStateName').textContent = "All states answered!";
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * available.length);
+      currentState = available[randomIndex];
+      document.getElementById('currentStateName').textContent = stateData[currentState].name;
+      document.getElementById('message').textContent = "";
+    }
+
+    // Reset map and stats
+    function resetMap() {
+      correctCount = 0;
+      incorrectCount = 0;
+      totalCount = 0;
+      updateStats();
+      // Reset every state's fill to default white
+      for (const key in stateData) {
+        const elem = document.getElementById('US-' + key);
+        if (elem) {
+          elem.style.fill = '#ffffff';
+        }
+      }
+      selectNewState();
+    }
+
+    // Handle form submission
+    document.getElementById('capital-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      if (!currentState) return;
+      const userInput = document.getElementById('capital').value.trim().toLowerCase();
+      const correctCapital = stateData[currentState].capital.toLowerCase();
+      totalCount++;
+      const stateElem = document.getElementById('US-' + currentState);
+      if (userInput === correctCapital) {
+        correctCount++;
+        if (stateElem) {
+          stateElem.style.fill = '#34d399'; // green for correct
+        }
+        document.getElementById('message').textContent = "Correct!";
+      } else {
+        incorrectCount++;
+        if (stateElem) {
+          stateElem.style.fill = '#f87171'; // red for incorrect
+        }
+        document.getElementById('message').textContent =
+          "Incorrect. The capital of " + stateData[currentState].name + " is " + stateData[currentState].capital + ".";
+      }
+      document.getElementById('capital').value = "";
+      updateStats();
+      selectNewState();
+    });
+
+    document.getElementById('reset-button').addEventListener('click', function() {
+      resetMap();
+    });
+
+    // Load the SVG from the "us.svg" file in the static folder
+    fetch('{{ url_for("static", filename="us.svg") }}')
+      .then(response => response.text())
+      .then(svgText => {
+        document.getElementById('map-container').innerHTML = svgText;
+        svgMap = document.querySelector('#map-container svg');
+        // Ensure each state path has the default fill (if not already set)
+        const paths = svgMap.querySelectorAll('path');
+        paths.forEach(path => {
+          if (!path.getAttribute('fill') || path.getAttribute('fill') === 'none') {
+            path.style.fill = '#ffffff';
+          }
         });
-    </script>
+        selectNewState();
+      })
+      .catch(err => {
+        console.error('Error loading SVG:', err);
+      });
+  </script>
 </body>
 </html>
